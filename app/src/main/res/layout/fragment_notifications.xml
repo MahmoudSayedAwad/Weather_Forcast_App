@@ -45,7 +45,7 @@
                     android:orientation="horizontal">
 
                     <RadioButton
-                        android:id="@+id/GPS"
+                        android:id="@+id/GPSRbtn"
                         android:layout_width="70dp"
                         android:layout_height="32dp"
                         android:layout_marginEnd="10dp"
@@ -56,7 +56,7 @@
                         android:textColor="@drawable/radio_text_selector" />
 
                     <RadioButton
-                        android:id="@+id/mapRadioButton"
+                        android:id="@+id/mapRBtn"
                         android:layout_width="70dp"
                         android:layout_height="32dp"
                         android:layout_marginEnd="10dp"
@@ -90,7 +90,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
                     android:gravity="center"
-                    android:text="wind_speed"
+                    android:text="wind speed"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
@@ -194,54 +194,123 @@
                 </RadioGroup>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
-
-        <com.google.android.material.switchmaterial.SwitchMaterial
-            android:id="@+id/notification"
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginRight="16dp"
-            android:switchMinWidth="56dp"
-            android:text="notification"
-            android:textColor="#777777"
-            android:textOff="OFF"
-            android:textOn="ON"
-            android:textSize="15sp"
-            android:textStyle="bold" />
+            android:layout_margin="10dp"
+            android:focusable="true"
+            android:padding="10dp"
+            app:cardCornerRadius="10dp"
+            app:cardElevation="8dp">
 
-        <TextView
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="10dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:gravity="center"
+                    android:text="Language"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <RadioGroup
+                    android:id="@+id/Language"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:gravity="center_horizontal"
+                    android:orientation="horizontal">
+
+                    <RadioButton
+                        android:id="@+id/arabic"
+                        android:layout_width="70dp"
+                        android:layout_height="32dp"
+                        android:layout_marginEnd="10dp"
+                        android:background="@drawable/radio_selector"
+                        android:button="@android:color/transparent"
+                        android:gravity="center"
+                        android:text="arabic"
+                        android:textColor="@drawable/radio_text_selector" />
+
+                    <RadioButton
+                        android:id="@+id/english"
+                        android:layout_width="70dp"
+                        android:layout_height="32dp"
+                        android:layout_marginEnd="10dp"
+                        android:background="@drawable/radio_selector"
+                        android:button="@android:color/transparent"
+                        android:gravity="center"
+                        android:text="English"
+                        android:textColor="@drawable/radio_text_selector" />
+
+
+                </RadioGroup>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:text="language"
-            android:textSize="16sp"
-            android:textStyle="bold" />
+            android:layout_margin="10dp"
+            android:focusable="true"
+            android:padding="10dp"
+            app:cardCornerRadius="10dp"
+            app:cardElevation="8dp">
 
-        <RadioGroup
-            android:id="@+id/language"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="10dp">
 
-            <RadioButton
-                android:id="@+id/English"
-                android:layout_width="wrap_content"
-                android:layout_height="32dp"
-                android:layout_marginBottom="10dp"
-                android:checked="true"
-                android:gravity="center"
-                android:text="english" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:gravity="center"
+                    android:text="notification"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
 
-            <RadioButton
-                android:id="@+id/Arabic"
-                android:layout_width="wrap_content"
-                android:layout_height="32dp"
-                android:gravity="center"
-                android:text="arabic" />
+                <RadioGroup
+                    android:id="@+id/notification"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:gravity="center_horizontal"
+                    android:orientation="horizontal">
 
-        </RadioGroup>
+                    <RadioButton
+                        android:id="@+id/on"
+                        android:layout_width="70dp"
+                        android:layout_height="32dp"
+                        android:layout_marginEnd="10dp"
+                        android:background="@drawable/radio_selector"
+                        android:button="@android:color/transparent"
+                        android:gravity="center"
+                        android:text="on"
+                        android:textColor="@drawable/radio_text_selector" />
+
+                    <RadioButton
+                        android:id="@+id/off"
+                        android:layout_width="70dp"
+                        android:layout_height="32dp"
+                        android:layout_marginEnd="10dp"
+                        android:background="@drawable/radio_selector"
+                        android:button="@android:color/transparent"
+                        android:gravity="center"
+                        android:text="off"
+                        android:textColor="@drawable/radio_text_selector" />
+
+
+                </RadioGroup>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
 
         <View
             android:layout_width="match_parent"

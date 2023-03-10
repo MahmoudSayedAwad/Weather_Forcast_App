@@ -8,5 +8,6 @@ data class OneCall(
     var lon: Double,
     var minutely: List<Minutely>,
     var timezone: String,
-    var timezone_offset: Int
+    var timezone_offset: Int,
+    var alerts: List<Alert>
 )

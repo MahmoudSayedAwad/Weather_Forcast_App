@@ -1,5 +1,7 @@
 package com.example.weather_forcast_app.ui.home
 
+import android.content.pm.PackageManager
+import android.location.Address
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,18 +15,20 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.weather_forcast_app.LocationHelper
+import com.example.weather_forcast_app.OnGetLocationListener
 import com.example.weather_forcast_app.R
+import com.example.weather_forcast_app.permissionId
 import com.example.weather_forcast_app.utils.Constants.Companion.IMG_URL
 import com.example.weather_forcast_app.utils.getDateTime
 import com.squareup.picasso.Picasso
-import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.coroutines.launch
+import kotlin.math.roundToInt
 
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment(), OnGetLocationListener {
+    lateinit var location: LocationHelper
     private val viewModel: HomeViewModel by activityViewModels()
     private lateinit var progressBar: ProgressBar
-
-    //view
     private lateinit var city: TextView
     private lateinit var date: TextView
     private lateinit var weatherDescription: TextView
@@ -35,7 +39,6 @@ class HomeFragment : Fragment() {
     private lateinit var dailyWeatherRc: RecyclerView
     private lateinit var cardView: CardView
     private lateinit var cardView2: CardView
-
     private lateinit var pressureTxt: TextView
     private lateinit var humidityTxt: TextView
     private lateinit var windTxt: TextView
@@ -44,11 +47,8 @@ class HomeFragment : Fragment() {
     private lateinit var visibilityTxt: TextView
     private lateinit var hourlyWeathersAdapter: HourlyAdapter
     private lateinit var daysWeathersAdapter: DailyAdapter
-
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         super.onCreateView(inflater, container, savedInstanceState)
         return inflater.inflate(R.layout.fragment_home, container, false);
@@ -58,49 +58,24 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         init(view)
         //putDataOnView()
-        viewModel.getCurrentWeather(
-            29.9642,
-            32.5056,
-            "metric",
-            "en",
-            "67ca8d4acae59d540ea421e817caf1bb"
-        )
-        lifecycleScope.launch {
-            viewModel.currentWeather.collect {
-                if(it!=null){
-                    println(it.toString())
-                    var weatherCurrent = it.current
-                    var weatherDesc = weatherCurrent.weather.get(0)
-                    date.text = getDateTime(
-                        weatherCurrent.dt,
-                        "EEE, d MMM ","en"
-                    )
-                    weatherDescription.text = weatherDesc.description
-                    tempTextView.text = weatherCurrent.temp.toString()
-                    tempTypeTextView.text = "C"
-                    Picasso.get().load("${IMG_URL}${weatherDesc.icon}@4x.png")
 
-                    pressureTxt.text = weatherCurrent.pressure.toString()
-                    humidityTxt.text = weatherCurrent.humidity.toString()
-                    cloudTxt.text = weatherCurrent.clouds.toString()
-                    visibilityTxt.text = weatherCurrent.clouds.toString()
-                    windTxt.text = weatherCurrent.wind_speed.toString()
-
-                    daysWeathersAdapter.setDays(it.daily)
-
-                    hourlyWeathersAdapter.sethours(it.hourly)
-                }
-
-
-            }
-        }
-
+        location = LocationHelper(requireContext(), requireActivity(), this)
+        location.getLocation()
 
     }
 
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int, permissions: Array<String>, grantResults: IntArray
+    ) {
+        if (requestCode == permissionId) {
+            if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                location.getLocation()
+            }
+        }
+    }
+
     private fun init(view: View) {
-
-
         city = view.findViewById(R.id.tvCity)
         date = view.findViewById(R.id.tvDateTime)
         weatherDescription = view.findViewById(R.id.tvHomeWeatherDescription)
@@ -111,6 +86,12 @@ class HomeFragment : Fragment() {
         dailyWeatherRc = view.findViewById(R.id.recyclerViewDaily)
         progressBar = view.findViewById(R.id.HomeprogressBar)
         cardView = view.findViewById(R.id.HomecardView)
+        pressureTxt = view.findViewById(R.id.tvPressure)
+        humidityTxt = view.findViewById(R.id.tvHumidity)
+        windTxt = view.findViewById(R.id.txtViewWindSpeed)
+        cloudTxt = view.findViewById(R.id.tvClouds)
+        ultraVioletTxt = view.findViewById(R.id.tvUVI)
+        visibilityTxt = view.findViewById(R.id.tvVisibility)
         hourlyWeathersAdapter = HourlyAdapter(emptyList(), view.context)
         daysWeathersAdapter = DailyAdapter(view.context, emptyList())
         var layoutManager = LinearLayoutManager(view.context)
@@ -128,45 +109,35 @@ class HomeFragment : Fragment() {
             this.layoutManager = layoutManagerDays
             adapter = daysWeathersAdapter
         }
-
-        pressureTxt = view.findViewById(R.id.tvPressure)
-        humidityTxt = view.findViewById(R.id.tvHumidity)
-        windTxt = view.findViewById(R.id.txtViewWindSpeed)
-        cloudTxt = view.findViewById(R.id.tvClouds)
-        ultraVioletTxt = view.findViewById(R.id.tvUVI)
-        visibilityTxt = view.findViewById(R.id.tvVisibility)
-
     }
 
-    private fun putDataOnView() {
+    override fun onSuccess(addressList: List<Address>) {
+        viewModel.getCurrentWeather(
+            addressList[0].latitude, addressList[0].longitude, "metric", "en", "67ca8d4acae59d540ea421e817caf1bb"
+        )
         lifecycleScope.launch {
             viewModel.currentWeather.collect {
-
-                println(it?.current?.dt)
-                var weatherCurrent = it?.current
-                var weatherDesc = weatherCurrent?.weather?.get(0)
-                date.text = getDateTime(
-                    weatherCurrent!!.dt,
-                    "EEE, d MMM ","en"
-                )
-                weatherDescription.text = weatherDesc!!.description
-                tempTextView.text = weatherCurrent.temp.toString()
-                tempTypeTextView.text = "C"
-                Picasso.get().load("${IMG_URL}${weatherDesc.icon}@4x.png")
-
-                pressureTxt.text = weatherCurrent.pressure.toString()
-                humidityTxt.text = weatherCurrent.humidity.toString()
-                cloudTxt.text = weatherCurrent.clouds.toString()
-                visibilityTxt.text = weatherCurrent.clouds.toString()
-                windTxt.text = weatherCurrent.wind_speed.toString()
-
-                daysWeathersAdapter.setDays(it!!.daily)
-
-                hourlyWeathersAdapter.sethours(it.hourly)
+                if (it != null) {
+                    println(it.toString())
+                    var weatherCurrent = it.current
+                    var weatherDesc = weatherCurrent.weather.get(0)
+                    date.text = getDateTime(
+                        weatherCurrent.dt, "EEE, d MMM ", "en"
+                    )
+                    city.text=addressList[0].adminArea
+                    weatherDescription.text = weatherDesc.description
+                    tempTextView.text = weatherCurrent.temp.roundToInt().toString()
+                    tempTypeTextView.text = "C"
+                    Picasso.get().load("${IMG_URL}${weatherDesc.icon}@4x.png")
+                    pressureTxt.text = weatherCurrent.pressure.toString()
+                    humidityTxt.text = weatherCurrent.humidity.toString()
+                    cloudTxt.text = weatherCurrent.clouds.toString()
+                    visibilityTxt.text = weatherCurrent.clouds.toString()
+                    windTxt.text = weatherCurrent.wind_speed.toString()
+                    daysWeathersAdapter.setDays(it.daily)
+                    hourlyWeathersAdapter.sethours(it.hourly)
+                }
             }
-
-
-
         }
     }
 }

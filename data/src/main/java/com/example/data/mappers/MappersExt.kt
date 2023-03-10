@@ -8,13 +8,15 @@ import com.example.domain.entities.*
 fun OneCallResponse?.toDomain(): OneCall {
     return OneCall(
         this?.current.toDomain(),
-        this?.daily?.map { obj -> obj.toDomain() }?.toList() ?: emptyList(),
+        this?.daily?.map { obj -> obj.toDomain() }?.toList() ?: emptyList<Daily>(),
         this?.hourly?.map { obj -> obj.toDomain() }?.toList() ?: emptyList(),
         this?.lat?.orZero() ?: Constants.zero.toDouble(),
         this?.lon?.orZero() ?: Constants.zero.toDouble(),
         this?.minutely?.map { obj -> obj.toDomain() }?.toList() ?: emptyList(),
         this?.timezone.orEmpty() ?: Constants.empty,
         this?.timezone_offset?.orZero() ?: Constants.zero,
+        this?.alerts?.map { obj->obj.toDomain()}?.toList()?: emptyList()
+
     )
 }
 
@@ -120,6 +122,16 @@ fun HourlyResponse?.toDomain(): Hourly {
 fun MinutelyResponse?.toDomain(): Minutely {
     return Minutely(
         this?.dt?.orZero() ?: Constants.zero, this?.precipitation?.orZero() ?: Constants.zero
+    )
+}
+fun AlertResponse?.toDomain(): Alert {
+    return Alert(
+        this?.description.orEmpty() ,
+        this?.end?.orZero()?:Constants.zero,
+        this?.event.orEmpty(),
+        this?.sender_name.orEmpty(),
+        this?.start?.orZero()?:Constants.zero,
+        this?.tags?.map {tag->tag.orEmpty() }?.toList()?: emptyList()
     )
 }
 
