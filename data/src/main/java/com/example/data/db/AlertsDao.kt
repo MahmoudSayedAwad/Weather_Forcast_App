@@ -6,12 +6,12 @@ import com.example.data.utils.Constants
 
 @Dao
 interface AlertsDao {
-    @get:Query("Select * from ${Constants.userAlertTableName}")
-    val getUserAlerts: List<UserAlert>
+    @Query("Select * from ${Constants.userAlertTableName}")
+    suspend fun getUserAlerts(): List<UserAlert>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertUserAlerts(userAlerts: UserAlert)
+    suspend fun insertUserAlerts(userAlerts: UserAlert)
 
     @Delete
-    fun deleteUserAlerts(userAlerts: UserAlert)
+    suspend fun deleteUserAlerts(userAlerts: UserAlert)
 }

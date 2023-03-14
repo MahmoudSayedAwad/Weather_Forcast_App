@@ -6,3 +6,6 @@ fun Double?.orZero():Double{
 fun Int?.orZero():Int{
     return this ?: Constants.zero
 }
+fun Long?.orZero():Long{
+    return this ?: Constants.zero.toLong()
+}

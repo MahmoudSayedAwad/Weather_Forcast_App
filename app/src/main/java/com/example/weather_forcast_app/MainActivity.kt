@@ -15,12 +15,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        testLat=findViewById(R.id.text_id)
-        viewModel.getCurrentWeather(29.9642,32.5056,"metric","en","67ca8d4acae59d540ea421e817caf1bb")
-        lifecycleScope.launch {
-            viewModel.currentWeather.collect {
 
-            }
-        }
+
     }
 }

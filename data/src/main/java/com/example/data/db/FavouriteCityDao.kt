@@ -6,11 +6,13 @@ import com.example.data.utils.Constants
 
 
 @Dao
-    interface FavouriteCityDao {
-        @Query("Select * from ${Constants.favouriteCityTableName}")
-       suspend fun getFavourite():List<FavouriteCity>
-        @Insert(onConflict = OnConflictStrategy.IGNORE)
-       suspend fun addCityToFavourite(favouriteCity: FavouriteCity)
-        @Delete
-       suspend fun deleteCityFromFavourite(favouriteCity: FavouriteCity)
-    }
+interface FavouriteCityDao {
+    @Query("Select * from ${Constants.favouriteCityTableName}")
+    suspend fun getAllFavouriteCities(): List<FavouriteCity>
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun addCityToFavourite(favouriteCity: FavouriteCity)
+
+    @Delete
+    suspend fun deleteCityFromFavourite(favouriteCity: FavouriteCity)
+}

@@ -125,7 +125,7 @@
                     android:layout_marginRight="40dp"
                     android:checked="true"
                     android:gravity="center"
-                    android:text="alarm"
+                    android:text="@string/alarm"
                     android:textColor="@color/primary"
                     android:textSize="14sp" />
 
@@ -134,7 +134,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="notificationAlertsOption"
+                    android:text="@string/notificationAlertsOption"
                     android:textColor="@color/primary"
                     android:textSize="14sp" />
 
@@ -169,7 +169,7 @@
                         android:layout_height="match_parent"
                         android:layout_gravity="center"
                         android:background="@android:color/transparent"
-                        android:text="save"
+                        android:text="@string/save"
                         android:textAllCaps="false"
                         tools:ignore="TouchTargetSizeCheck" />
                 </FrameLayout>

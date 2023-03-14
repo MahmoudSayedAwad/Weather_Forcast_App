@@ -134,6 +134,15 @@ fun AlertResponse?.toDomain(): Alert {
         this?.tags?.map {tag->tag.orEmpty() }?.toList()?: emptyList()
     )
 }
+//-----------------------//
+fun UserAlert?.toDomain():UserAlertsEntity{
+    return UserAlertsEntity(
+        this?.id?.orZero() ?: Constants.zero,
+        this?.startDate?.orZero() ?: Constants.zero.toLong(),
+        this?.endDate?.orZero() ?: Constants.zero.toLong(),
+        this?.type.orEmpty()?:Constants.empty
+    )
+}
 
 
 

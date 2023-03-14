@@ -1,19 +1,8 @@
 package com.example.weather_forcast_app.utils
 
-import android.content.Context
 import android.content.SharedPreferences
 
-class MySharedPref private constructor(var context: Context) {
-    companion object {
-        private const val preferenceFile = "SettingsPref"
-        private var instance: MySharedPref? = null
-        fun getInstance(context: Context): MySharedPref {
-            return instance ?: MySharedPref(context)
-        }
-    }
-
-    private var sharedPreferences: SharedPreferences =
-        context.getSharedPreferences(preferenceFile, Context.MODE_PRIVATE)
+class SharedPrefManger  constructor( val sharedPreferences: SharedPreferences) {
     private var editor: SharedPreferences.Editor = sharedPreferences.edit()
     fun setValue(key: String, value: Any) {
         when (value) {
@@ -52,8 +41,8 @@ class MySharedPref private constructor(var context: Context) {
         return sharedPreferences.getLong(key, defaultValue)
     }
 
-    fun getBooleanValue(keyFlag: String, defaultValue: Boolean): Boolean {
-        return sharedPreferences.getBoolean(keyFlag, defaultValue)
+    fun getBooleanValue(key: String, defaultValue: Boolean): Boolean {
+        return sharedPreferences.getBoolean(key, defaultValue)
     }
 
     fun removeKey(key: String) {
@@ -64,5 +53,6 @@ class MySharedPref private constructor(var context: Context) {
     fun clear() {
         editor.clear().apply()
     }
+
 
 }

@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        tools:context=".ui.notifications.NotificationsFragment">
+        tools:context=".ui.settings.SettingsFragment">
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
@@ -32,7 +32,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
                     android:gravity="center"
-                    android:text="location"
+                    android:text="@string/location"
                     android:textSize="15sp"
                     android:textStyle="bold" />
 
@@ -46,24 +46,24 @@
 
                     <RadioButton
                         android:id="@+id/GPSRbtn"
-                        android:layout_width="70dp"
-                        android:layout_height="32dp"
+                        android:layout_width="74dp"
+                        android:layout_height="40dp"
                         android:layout_marginEnd="10dp"
                         android:background="@drawable/radio_selector"
                         android:button="@android:color/transparent"
                         android:gravity="center"
-                        android:text="gps"
+                        android:text="@string/gps"
                         android:textColor="@drawable/radio_text_selector" />
 
                     <RadioButton
                         android:id="@+id/mapRBtn"
-                        android:layout_width="70dp"
-                        android:layout_height="32dp"
+                        android:layout_width="74dp"
+                        android:layout_height="40dp"
                         android:layout_marginEnd="10dp"
                         android:background="@drawable/radio_selector"
                         android:button="@android:color/transparent"
                         android:gravity="center"
-                        android:text="map"
+                        android:text="@string/map"
                         android:textColor="@drawable/radio_text_selector" />
                 </RadioGroup>
             </LinearLayout>
@@ -90,7 +90,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
                     android:gravity="center"
-                    android:text="wind speed"
+                    android:text="@string/wind_speed"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
@@ -104,24 +104,24 @@
 
                     <RadioButton
                         android:id="@+id/MeterSec"
-                        android:layout_width="70dp"
-                        android:layout_height="32dp"
+                        android:layout_width="74dp"
+                        android:layout_height="40dp"
                         android:layout_marginEnd="10dp"
                         android:background="@drawable/radio_selector"
                         android:button="@android:color/transparent"
                         android:gravity="center"
-                        android:text="m/s"
+                        android:text="@string/meter_sec"
                         android:textColor="@drawable/radio_text_selector" />
 
                     <RadioButton
                         android:id="@+id/MileHour"
-                        android:layout_width="70dp"
-                        android:layout_height="32dp"
+                        android:layout_width="74dp"
+                        android:layout_height="40dp"
                         android:layout_marginEnd="10dp"
                         android:background="@drawable/radio_selector"
                         android:button="@android:color/transparent"
                         android:gravity="center"
-                        android:text="m/h"
+                        android:text="@string/mile_hour"
                         android:textColor="@drawable/radio_text_selector" />
                 </RadioGroup>
             </LinearLayout>
@@ -147,7 +147,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
                     android:gravity="center"
-                    android:text="temperature"
+                    android:text="@string/temperature"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
@@ -161,35 +161,35 @@
 
                     <RadioButton
                         android:id="@+id/Celsius"
-                        android:layout_width="70dp"
-                        android:layout_height="32dp"
+                        android:layout_width="74dp"
+                        android:layout_height="40dp"
                         android:layout_marginEnd="10dp"
                         android:background="@drawable/radio_selector"
                         android:button="@android:color/transparent"
                         android:gravity="center"
-                        android:text="celsius"
+                        android:text="@string/celsius"
                         android:textColor="@drawable/radio_text_selector" />
 
                     <RadioButton
                         android:id="@+id/Kelvin"
-                        android:layout_width="70dp"
-                        android:layout_height="32dp"
+                        android:layout_width="74dp"
+                        android:layout_height="40dp"
                         android:layout_marginEnd="10dp"
                         android:background="@drawable/radio_selector"
                         android:button="@android:color/transparent"
                         android:gravity="center"
-                        android:text="kelvin"
+                        android:text="@string/kelvin"
                         android:textColor="@drawable/radio_text_selector" />
 
                     <RadioButton
                         android:id="@+id/Fahrenheit"
                         android:layout_width="70dp"
-                        android:layout_height="32dp"
+                        android:layout_height="40dp"
                         android:layout_marginEnd="10dp"
                         android:background="@drawable/radio_selector"
                         android:button="@android:color/transparent"
                         android:gravity="center"
-                        android:text="fahrenheit"
+                        android:text="@string/fahrenheit"
                         android:textColor="@drawable/radio_text_selector" />
                 </RadioGroup>
             </LinearLayout>
@@ -214,7 +214,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
                     android:gravity="center"
-                    android:text="Language"
+                    android:text="@string/language"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
@@ -228,24 +228,24 @@
 
                     <RadioButton
                         android:id="@+id/arabic"
-                        android:layout_width="70dp"
-                        android:layout_height="32dp"
+                        android:layout_width="74dp"
+                        android:layout_height="40dp"
                         android:layout_marginEnd="10dp"
                         android:background="@drawable/radio_selector"
                         android:button="@android:color/transparent"
                         android:gravity="center"
-                        android:text="arabic"
+                        android:text="@string/arabic"
                         android:textColor="@drawable/radio_text_selector" />
 
                     <RadioButton
                         android:id="@+id/english"
-                        android:layout_width="70dp"
-                        android:layout_height="32dp"
+                        android:layout_width="74dp"
+                        android:layout_height="40dp"
                         android:layout_marginEnd="10dp"
                         android:background="@drawable/radio_selector"
                         android:button="@android:color/transparent"
                         android:gravity="center"
-                        android:text="English"
+                        android:text="@string/english"
                         android:textColor="@drawable/radio_text_selector" />
 
 
@@ -272,7 +272,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
                     android:gravity="center"
-                    android:text="notification"
+                    android:text="@string/notification"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
@@ -286,24 +286,82 @@
 
                     <RadioButton
                         android:id="@+id/on"
-                        android:layout_width="70dp"
-                        android:layout_height="32dp"
+                        android:layout_width="74dp"
+                        android:layout_height="40dp"
                         android:layout_marginEnd="10dp"
                         android:background="@drawable/radio_selector"
                         android:button="@android:color/transparent"
                         android:gravity="center"
-                        android:text="on"
+                        android:text="@string/on"
                         android:textColor="@drawable/radio_text_selector" />
 
                     <RadioButton
                         android:id="@+id/off"
-                        android:layout_width="70dp"
-                        android:layout_height="32dp"
+                        android:layout_width="74dp"
+                        android:layout_height="40dp"
                         android:layout_marginEnd="10dp"
                         android:background="@drawable/radio_selector"
                         android:button="@android:color/transparent"
                         android:gravity="center"
-                        android:text="off"
+                        android:text="@string/off"
+                        android:textColor="@drawable/radio_text_selector" />
+
+
+                </RadioGroup>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:focusable="true"
+            android:padding="10dp"
+            app:cardCornerRadius="10dp"
+            app:cardElevation="8dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="10dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:gravity="center"
+                    android:text="@string/notiification_type"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <RadioGroup
+                    android:id="@+id/alertType"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:gravity="center_horizontal"
+                    android:orientation="horizontal">
+
+                    <RadioButton
+                        android:id="@+id/alert"
+                        android:layout_width="74dp"
+                        android:layout_height="40dp"
+                        android:layout_marginEnd="10dp"
+                        android:background="@drawable/radio_selector"
+                        android:button="@android:color/transparent"
+                        android:gravity="center"
+                        android:text="@string/title_alerts"
+                        android:textColor="@drawable/radio_text_selector" />
+
+                    <RadioButton
+                        android:id="@+id/notif"
+                        android:layout_width="74dp"
+                        android:layout_height="40dp"
+                        android:layout_marginEnd="10dp"
+                        android:background="@drawable/radio_selector"
+                        android:button="@android:color/transparent"
+                        android:gravity="center"
+                        android:text="@string/notification"
                         android:textColor="@drawable/radio_text_selector" />
 
 

@@ -1,7 +1,30 @@
 package com.example.weather_forcast_app.utils
 
-class Constants {
-    companion object{
-        val IMG_URL="https://openweathermap.org/img/wn/"
-    }
+object Constants {
+        const val IS_LOCATION_SET="isLocationSet"
+        const val SETTINGS_FILE: String="SettingsFile"
+        const val IMG_URL="https://openweathermap.org/img/wn/"
+        const val NOT_FOUND="not found"
+        const val IS_FIRST_TIME="isFirstTime"
+        const val LOCATION_METHOD_GPS="GPS"
+        const val LOCATION_METHOD_MAP="MAP"
+        const val APPLICATION_LANGUAGE_AR: String = "ar"
+        const val APPLICATION_LANGUAGE_EN: String = "en"
+        const val MEASUREMENT_UNIT_STANDARD: String = ""
+        const val MEASUREMENT_UNIT_METRIC: String = "metric"
+        const val MEASUREMENT_UNIT_IMPERIAL: String = "imperial"
+        const val WIND_SPEED_UNIT_M_P_S: String = "meter/second"
+        const val WIND_SPEED_UNIT_M_P_H: String = "mile/hour"
+        const val APPLICATION_LANGUAGE = "language"
+        const val CITY_Name = "city"
+        const val LONGITUDE = "longitude"
+        const val LATITUDE = "latitude"
+        const val NOTIFICATION = "notification"
+        const val LOCATION_METHOD = "location method"
+        const val WIND_SPEED_UNIT = "windSpeed unit"
+        const val MEASUREMENT_UNIT="measurement unit"
+        const val NOTIFICATION_Type = "notification type"
+        const val NOTIFICATION_Type_ALERT = "alert type"
+        const val NOTIFICATION_Type_NOTI = "noti alert"
+
 }
