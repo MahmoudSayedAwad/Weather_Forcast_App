@@ -4,7 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.domain.entities.Hourly
 import com.example.weather_forcast_app.R
@@ -16,11 +16,13 @@ import de.hdodenhof.circleimageview.CircleImageView
 class HourlyAdapter(
     private var hours: List<Hourly>,
     private val context: Context,
+    private val language: String
 ) : RecyclerView.Adapter<HourlyAdapter.ViewHolder>() {
-    fun sethours(hours:  List<Hourly>) {
+    fun sethours(hours: List<Hourly>) {
         this.hours = hours
         notifyDataSetChanged()
     }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view =
             LayoutInflater.from(parent.context).inflate(R.layout.hourly_item, parent, false)
@@ -29,9 +31,10 @@ class HourlyAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
-        holder.hourTime.text= getDateTime(hours.get(position).dt,"hh a","en")
-        holder.tempHour.text=hours.get(position).temp.toString()
-        Picasso.get().load("${Constants.IMG_URL}${hours.get(position).weather[0].icon}@4x.png").into(holder.tempIconHour)
+        holder.hourTime.text = getDateTime(hours.get(position).dt, "hh a", language)
+        holder.tempHour.text = hours.get(position).temp.toString()
+        Picasso.get().load("${Constants.IMG_URL}${hours.get(position).weather[0].icon}@4x.png")
+            .into(holder.tempIconHour)
 
 
     }

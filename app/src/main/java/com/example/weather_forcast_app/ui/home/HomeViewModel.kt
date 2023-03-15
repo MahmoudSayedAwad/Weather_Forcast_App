@@ -21,7 +21,6 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import java.util.*
@@ -83,6 +82,15 @@ class HomeViewModel @Inject constructor(
             listener
         )
     }
+    fun getLocationMethod():String {
+
+         return   sharedPrefManger.getStringValue(
+                Constants.LOCATION_METHOD,
+                Constants.LOCATION_METHOD_GPS
+            )
+
+
+    }
 
     fun getLongitude(): Double {
         return sharedPrefManger.getFloatValue(
@@ -94,14 +102,14 @@ class HomeViewModel @Inject constructor(
         return sharedPrefManger.getFloatValue(Constants.LATITUDE, 0f).toDouble()
     }
 
-    fun setLongitude(longitude: Float)  {
-         sharedPrefManger.setValue(
+    fun setLongitude(longitude: Float) {
+        sharedPrefManger.setValue(
             Constants.LONGITUDE, longitude
         )
     }
 
     fun setLatitude(latitude: Float) {
-       sharedPrefManger.setValue(Constants.LATITUDE, latitude)
+        sharedPrefManger.setValue(Constants.LATITUDE, latitude)
     }
 
     fun getCurrentTempMeasurementUnit(): String {
@@ -141,9 +149,10 @@ class HomeViewModel @Inject constructor(
 
 
     }
-    suspend fun addToDatabase(oneCall:OneCall){
+
+    suspend fun addToDatabase(oneCall: OneCall) {
         viewModelScope.launch {
-            insertOneCallModel(oneCall).flowOn(Dispatchers.IO).collect{
+            insertOneCallModel(oneCall).flowOn(Dispatchers.IO).collect {
 
             }
         }

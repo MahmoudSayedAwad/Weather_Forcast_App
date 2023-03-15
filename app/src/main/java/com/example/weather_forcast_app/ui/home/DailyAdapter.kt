@@ -13,7 +13,7 @@ import com.example.weather_forcast_app.utils.Constants
 import com.example.weather_forcast_app.utils.getDateTime
 import com.squareup.picasso.Picasso
 
-class DailyAdapter(private var context: Context, private var days: List<Daily>) :
+class DailyAdapter(private var context: Context, private var days: List<Daily>,val language:String) :
     RecyclerView.Adapter<DailyAdapter.ViewHolder>() {
     fun setDays(days: List<Daily>) {
         this.days = days
@@ -31,7 +31,7 @@ class DailyAdapter(private var context: Context, private var days: List<Daily>) 
         if (days.isNotEmpty()) {
 
 
-            holder.dayForCurrentWeather.text = getDateTime(days.get(position).dt, "MMM d", "en")
+            holder.dayForCurrentWeather.text = getDateTime(days.get(position).dt, "MMM d", language )
             holder.weatherDescriptionDay.text = days.get(position).weather[0].description
             holder.temperatureDay.text =
                 "${days.get(position).temp.max.toInt()}/ ${days.get(position).temp.min.toInt()}"

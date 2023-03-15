@@ -53,4 +53,8 @@
     <string name="on">فتح</string>
     <string name="off">اغلاق</string>
     <string name="notiification_type">طريقة التنبيه</string>
+    <string name="add_to_favourite">اضافة الى المفضلة</string>
+    <string name="add_location">"حفظ الموقع الحالي"</string>
+    <string name="channel_name">"اشعارات تطبيق الطقس"</string>
+    <string name="channel_description">منبه تطبيق الطقس</string>
 </resources>

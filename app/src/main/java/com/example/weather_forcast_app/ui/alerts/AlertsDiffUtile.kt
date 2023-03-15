@@ -5,7 +5,7 @@ import com.example.domain.entities.UserAlertsEntity
 
 class AlertsDiffUtile : DiffUtil.ItemCallback<UserAlertsEntity>() {
     override fun areItemsTheSame(oldItem: UserAlertsEntity, newItem: UserAlertsEntity): Boolean {
-        return oldItem.id == newItem.id
+        return oldItem.endDate == newItem.endDate
     }
 
     override fun areContentsTheSame(oldItem: UserAlertsEntity, newItem: UserAlertsEntity): Boolean {

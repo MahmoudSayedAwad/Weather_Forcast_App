@@ -7,6 +7,7 @@ class FavouriteDiffUtil:DiffUtil.ItemCallback<FavouriteCityEntity>(){
         return oldItem.cityName==newItem.cityName
     }
 
+
     override fun areContentsTheSame(oldItem: FavouriteCityEntity, newItem: FavouriteCityEntity): Boolean {
         return oldItem==newItem
     }

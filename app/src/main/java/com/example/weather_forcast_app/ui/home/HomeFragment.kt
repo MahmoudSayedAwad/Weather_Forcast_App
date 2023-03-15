@@ -12,7 +12,6 @@ import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
@@ -20,11 +19,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.domain.utils.ResultResponse
 import com.example.weather_forcast_app.R
-import com.example.weather_forcast_app.ui.settings.SettingsViewModel
 import com.example.weather_forcast_app.utils.Constants.IMG_URL
-import com.example.weather_forcast_app.utils.Constants.MEASUREMENT_UNIT
+import com.example.weather_forcast_app.utils.Constants.LOCATION_METHOD_MAP
 import com.example.weather_forcast_app.utils.Constants.MEASUREMENT_UNIT_IMPERIAL
+import com.example.weather_forcast_app.utils.Constants.MEASUREMENT_UNIT_METRIC
 import com.example.weather_forcast_app.utils.Constants.MEASUREMENT_UNIT_STANDARD
+import com.example.weather_forcast_app.utils.Constants.WIND_SPEED_UNIT_M_P_H
+import com.example.weather_forcast_app.utils.Constants.WIND_SPEED_UNIT_M_P_S
 import com.example.weather_forcast_app.utils.getDateTime
 import com.example.weather_forcast_app.utils.permissionId
 import com.squareup.picasso.Picasso
@@ -35,7 +36,6 @@ import kotlin.math.roundToInt
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
     private val viewModel: HomeViewModel by viewModels()
-    private val settingViewModel:SettingsViewModel by activityViewModels()
     private lateinit var progressBar: ProgressBar
     private lateinit var city: TextView
     private lateinit var date: TextView
@@ -55,6 +55,7 @@ class HomeFragment : Fragment() {
     private lateinit var hourlyWeathersAdapter: HourlyAdapter
     private lateinit var daysWeathersAdapter: DailyAdapter
     private lateinit var showWeatherData: ConstraintLayout
+    private lateinit var windSpeedDisc: TextView
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
@@ -65,21 +66,30 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         init(view)
-        //putDataOnView()
-
-        viewModel.location.observe(viewLifecycleOwner, Observer {
-            println(it.latitude)
-            viewModel.setLatitude(it.latitude.toFloat())
-            viewModel.setLongitude(it.longitude.toFloat())
+        if (viewModel.getLocationMethod() == LOCATION_METHOD_MAP) {
             viewModel.getCurrentWeather(
-                it.latitude,
-                it.longitude,
+                viewModel.getLatitude(),
+                viewModel.getLongitude(),
                 viewModel.getCurrentTempMeasurementUnit(),
                 viewModel.getLanguage(),
                 "67ca8d4acae59d540ea421e817caf1bb"
             )
 
-        })
+        } else {
+            viewModel.location.observe(viewLifecycleOwner, Observer {
+                println(it.latitude)
+                viewModel.setLatitude(it.latitude.toFloat())
+                viewModel.setLongitude(it.longitude.toFloat())
+                viewModel.getCurrentWeather(
+                    it.latitude,
+                    it.longitude,
+                    viewModel.getCurrentTempMeasurementUnit(),
+                    viewModel.getLanguage(),
+                    "67ca8d4acae59d540ea421e817caf1bb"
+                )
+
+            })
+        }
 
 
     }
@@ -110,9 +120,10 @@ class HomeFragment : Fragment() {
         cloudTxt = view.findViewById(R.id.tvClouds)
         ultraVioletTxt = view.findViewById(R.id.tvUVI)
         visibilityTxt = view.findViewById(R.id.tvVisibility)
-        hourlyWeathersAdapter = HourlyAdapter(emptyList(), view.context)
-        daysWeathersAdapter = DailyAdapter(view.context, emptyList())
-        showWeatherData=view.findViewById(R.id.showWeatherData)
+        hourlyWeathersAdapter = HourlyAdapter(emptyList(), view.context, viewModel.getLanguage())
+        daysWeathersAdapter = DailyAdapter(view.context, emptyList(), viewModel.getLanguage())
+        showWeatherData = view.findViewById(R.id.showWeatherData)
+        windSpeedDisc = view.findViewById(R.id.txtViewWindSpeedDiscrimination)
         var layoutManager = LinearLayoutManager(view.context)
         hourlyWeatherRc.apply {
             setHasFixedSize(true)
@@ -134,52 +145,68 @@ class HomeFragment : Fragment() {
                 when (result) {
                     is ResultResponse.OnSuccess -> {
                         viewModel.addToDatabase(result.data)
-                        showWeatherData.visibility=View.VISIBLE
-                        progressBar.visibility=View.GONE
+                        showWeatherData.visibility = View.VISIBLE
+                        progressBar.visibility = View.GONE
                         val weatherCurrent = result.data.current
                         val weatherDesc = weatherCurrent.weather.get(0)
                         date.text = getDateTime(
                             weatherCurrent.dt, "EEE, d MMM ", viewModel.getLanguage()
                         )
 
-                         viewModel.cityName.observe(viewLifecycleOwner) {
-                             city.text = it ?: ""
-                         }
+                        viewModel.cityName.observe(viewLifecycleOwner) {
+                            city.text = it ?: ""
+                        }
                         weatherDescription.text = weatherDesc.description
                         tempTextView.text = weatherCurrent.temp.roundToInt().toString()
-                        tempTypeTextView.text = if(viewModel.getCurrentTempMeasurementUnit()== MEASUREMENT_UNIT_STANDARD){
-                             "K"
-                        }else if(viewModel.getCurrentTempMeasurementUnit()== MEASUREMENT_UNIT_IMPERIAL){
-                            "F"
-                        } else{
-                            "C"
-                        }
+                        tempTypeTextView.text =
+                            if (viewModel.getCurrentTempMeasurementUnit() == MEASUREMENT_UNIT_STANDARD) {
+                                "K"
+                            } else if (viewModel.getCurrentTempMeasurementUnit() == MEASUREMENT_UNIT_IMPERIAL) {
+                                "F"
+                            } else {
+                                "C"
+                            }
 
                         Picasso.get().load("${IMG_URL}${weatherDesc.icon}@4x.png")
                         pressureTxt.text = weatherCurrent.pressure.toString()
                         humidityTxt.text = weatherCurrent.humidity.toString()
                         cloudTxt.text = weatherCurrent.clouds.toString()
                         visibilityTxt.text = weatherCurrent.clouds.toString()
-                        windTxt.text = weatherCurrent.wind_speed.toString()
+                        windTxt.text =
+                            if ((viewModel.getWindSpeedUnit() == WIND_SPEED_UNIT_M_P_S) && (viewModel.getCurrentTempMeasurementUnit() == MEASUREMENT_UNIT_IMPERIAL)) {
+                                (weatherCurrent.wind_speed * 0.44704).roundToInt().toString()
+                            } else if (viewModel.getWindSpeedUnit() == WIND_SPEED_UNIT_M_P_H && ((viewModel.getCurrentTempMeasurementUnit() == MEASUREMENT_UNIT_STANDARD) || (viewModel.getCurrentTempMeasurementUnit() == MEASUREMENT_UNIT_METRIC))) {
+
+                                (weatherCurrent.wind_speed * 2.23693629).roundToInt().toString()
+                            } else {
+                                weatherCurrent.wind_speed.toString()
+                            }
+
+                        windSpeedDisc.text =
+                            if (viewModel.getWindSpeedUnit() == WIND_SPEED_UNIT_M_P_S) {
+                                view.resources.getString(R.string.meter_sec)
+                            } else {
+                                view.resources.getString(R.string.mile_hour)
+                            }
+
                         daysWeathersAdapter.setDays(result.data.daily)
                         hourlyWeathersAdapter.sethours(result.data.hourly)
 
                     }
-                    is ResultResponse.OnLoading ->{
-                        showWeatherData.visibility=View.GONE
-                        progressBar.visibility=View.VISIBLE
+                    is ResultResponse.OnLoading -> {
+                        showWeatherData.visibility = View.INVISIBLE
+                        progressBar.visibility = View.VISIBLE
                     }
-                    is ResultResponse.OnError->{
-                        showWeatherData.visibility=View.GONE
-                        progressBar.visibility=View.GONE
-                        Toast.makeText(requireContext(),result.message,Toast.LENGTH_LONG).show()
+                    is ResultResponse.OnError -> {
+                        showWeatherData.visibility = View.GONE
+                        progressBar.visibility = View.GONE
+                        Toast.makeText(requireContext(), result.message, Toast.LENGTH_LONG).show()
                     }
                     else -> {}
                 }
             }
         }
     }
-
 
 
 }

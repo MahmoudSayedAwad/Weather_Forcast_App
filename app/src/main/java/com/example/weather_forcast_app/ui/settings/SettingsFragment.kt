@@ -1,7 +1,11 @@
 package com.example.weather_forcast_app.ui.settings
 
+import android.app.AlertDialog
+import android.content.DialogInterface
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
-import android.util.Log
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,14 +13,13 @@ import android.widget.RadioButton
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.asLiveData
+import androidx.navigation.Navigation
 import com.example.weather_forcast_app.R
 import com.example.weather_forcast_app.databinding.FragmentSettingsBinding
-import com.example.weather_forcast_app.ui.home.HomeViewModel
+import com.example.weather_forcast_app.utils.Constants
 import com.example.weather_forcast_app.utils.Constants.APPLICATION_LANGUAGE_AR
 import com.example.weather_forcast_app.utils.Constants.APPLICATION_LANGUAGE_EN
 import com.example.weather_forcast_app.utils.Constants.LOCATION_METHOD_GPS
-import com.example.weather_forcast_app.utils.Constants.LOCATION_METHOD_MAP
 import com.example.weather_forcast_app.utils.Constants.MEASUREMENT_UNIT_IMPERIAL
 import com.example.weather_forcast_app.utils.Constants.MEASUREMENT_UNIT_METRIC
 import com.example.weather_forcast_app.utils.Constants.MEASUREMENT_UNIT_STANDARD
@@ -25,8 +28,6 @@ import com.example.weather_forcast_app.utils.Constants.NOTIFICATION_Type_NOTI
 import com.example.weather_forcast_app.utils.Constants.WIND_SPEED_UNIT_M_P_H
 import com.example.weather_forcast_app.utils.Constants.WIND_SPEED_UNIT_M_P_S
 import com.example.weather_forcast_app.utils.LocaleHelper
-import com.google.android.gms.common.ConnectionResult
-import com.google.android.gms.common.GoogleApiAvailability
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -41,23 +42,35 @@ class SettingsFragment : Fragment() {
         val root: View = binding.root
         return root
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         init(view)
 
     }
-     fun init(view: View) {
+
+    fun init(view: View) {
         lateinit var radioButton: RadioButton
         binding.location.setOnCheckedChangeListener { _, checkedId ->
             when (checkedId) {
                 R.id.GPSRbtn -> {
-                    viewModel.setLocationMethod(LOCATION_METHOD_GPS)
+                    //  viewModel.setLocationMethod(LOCATION_METHOD_GPS)
                 }
                 R.id.mapRBtn -> {
-                    viewModel.setLocationMethod(LOCATION_METHOD_MAP)
+                    //  viewModel.setLocationMethod(LOCATION_METHOD_MAP)
                 }
             }
 
+
+        }
+        binding.GPSRbtn.setOnClickListener {
+            viewModel.setLocationMethod(LOCATION_METHOD_GPS)
+
+        }
+        binding.mapRBtn.setOnClickListener {
+            val action =
+                SettingsFragmentDirections.actionNavigationSettingsToMapFragment(Constants.COMING_FROM_SETTING)
+            Navigation.findNavController(requireView()).navigate(action)
 
         }
         binding.windSpeed.setOnCheckedChangeListener { _, checkedId ->
@@ -84,15 +97,24 @@ class SettingsFragment : Fragment() {
             }
 
         }
+        binding.english.setOnClickListener{
+           // LocaleHelper.setAppLocale(requireContext(), APPLICATION_LANGUAGE_EN)
+            requireActivity().recreate()
+        }
+        binding.arabic.setOnClickListener{
+            requireActivity().recreate()
+        }
         binding.Language.setOnCheckedChangeListener { _, checkedId ->
             when (checkedId) {
                 R.id.english -> {
                     viewModel.setLanguage(APPLICATION_LANGUAGE_EN)
                     LocaleHelper.setAppLocale(requireContext(), APPLICATION_LANGUAGE_EN)
+
                 }
                 R.id.arabic -> {
                     viewModel.setLanguage(APPLICATION_LANGUAGE_AR)
                     LocaleHelper.setAppLocale(requireContext(), APPLICATION_LANGUAGE_AR)
+
                 }
             }
 
@@ -107,6 +129,9 @@ class SettingsFragment : Fragment() {
                 }
             }
         }
+        binding.alert.setOnClickListener{
+
+        }
         binding.alertType.setOnCheckedChangeListener { _, checkedId ->
             when (checkedId) {
                 R.id.notif -> {
@@ -114,6 +139,7 @@ class SettingsFragment : Fragment() {
                 }
                 R.id.alert -> {
                     viewModel.setNotificationType(NOTIFICATION_Type_ALERT)
+
                 }
             }
         }
@@ -123,7 +149,7 @@ class SettingsFragment : Fragment() {
         viewModel.getWindSpeedUnit()
         viewModel.getCurrentTempMeasurementUnit()
         viewModel.getNotificationChecked()
-         viewModel.getNotificationType()
+        viewModel.getNotificationType()
         viewModel.changedSuccessfully.observe(viewLifecycleOwner) {
             Toast.makeText(view.context, it, Toast.LENGTH_LONG).show()
         }
@@ -170,12 +196,13 @@ class SettingsFragment : Fragment() {
             }
         }
         viewModel.notificationType.observe(viewLifecycleOwner) {
-            if (it== NOTIFICATION_Type_NOTI) {
+            if (it == NOTIFICATION_Type_NOTI) {
                 binding.notif.isChecked = true
             } else {
                 binding.alert.isChecked = true
             }
         }
     }
+
 
 }

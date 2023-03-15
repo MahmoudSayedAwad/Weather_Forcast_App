@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.domain.entities.FavouriteCityEntity
@@ -36,9 +37,11 @@ class FavouriteFragment : Fragment(), FavouriteInterface {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.addFavFloatingActionButton.setOnClickListener {
-            val action = FavouriteFragmentDirections.actionNavigationFavouriteToMapFragment()
+            val action =
+                FavouriteFragmentDirections.actionNavigationFavouriteToMapFragment("favourite")
             it.findNavController().navigate(action)
         }
+        viewModel.getFavouriteList()
         lifecycleScope.launch {
             viewModel.favouriteList.collect { result ->
                 when (result) {
@@ -58,19 +61,27 @@ class FavouriteFragment : Fragment(), FavouriteInterface {
         }
     }
 
-    override fun delete(fav: FavouriteCityEntity) {
+    override fun delete(fav: FavouriteCityEntity, position: Int) {
         AlertDialog.Builder(requireContext())
-            .setTitle(R.string.warning)
+            .setTitle(requireView().resources.getString(R.string.warning))
             .setMessage(getString(R.string.delete_place))
             .setPositiveButton(R.string.ok) { _, _ ->
                 lifecycleScope.launch {
                     viewModel.deleteFromFav(fav)
+                    favAdapter.notifyItemRemoved(position)
+
+
                 }
             }
-            .setNegativeButton(R.string.cancel) {_, _ -> }
+            .setNegativeButton(R.string.cancel) { _, _ -> }
             .setIcon(R.drawable.ic_warning_24)
             .show()
 
     }
 
+    override fun goToDetails(fav: FavouriteCityEntity) {
+        val action = FavouriteFragmentDirections.actionNavigationFavouriteToFavouriteDetails(fav.latitude.toFloat(),
+            fav.longitude.toFloat())
+        this.findNavController().navigate(action)
+    }
 }
