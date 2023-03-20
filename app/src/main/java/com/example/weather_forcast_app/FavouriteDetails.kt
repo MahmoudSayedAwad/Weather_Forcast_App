@@ -15,6 +15,7 @@ import com.example.weather_forcast_app.databinding.FragmentFavouriteDetailsBindi
 import com.example.weather_forcast_app.ui.home.DailyAdapter
 import com.example.weather_forcast_app.ui.home.HomeViewModel
 import com.example.weather_forcast_app.ui.home.HourlyAdapter
+import com.example.weather_forcast_app.ui.map.MapFragmentArgs
 import com.example.weather_forcast_app.utils.Constants
 import com.example.weather_forcast_app.utils.getDateTime
 import com.squareup.picasso.Picasso
@@ -28,6 +29,7 @@ class FavouriteDetails : Fragment() {
     private val viewModel: HomeViewModel by viewModels()
     lateinit var daysWeathersAdapter: DailyAdapter
     lateinit var hourlyWeathersAdapter: HourlyAdapter
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,9 +46,11 @@ class FavouriteDetails : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         init(requireView())
+        viewModel.getCityName( FavouriteDetailsArgs.fromBundle(requireArguments()).lat.toDouble(),
+            FavouriteDetailsArgs.fromBundle(requireArguments()).lon.toDouble(),requireContext())
         viewModel.getCurrentWeather(
-            viewModel.getLatitude(),
-            viewModel.getLongitude(),
+            FavouriteDetailsArgs.fromBundle(requireArguments()).lat.toDouble(),
+            FavouriteDetailsArgs.fromBundle(requireArguments()).lon.toDouble() ,
             viewModel.getCurrentTempMeasurementUnit(),
             viewModel.getLanguage(),
             "67ca8d4acae59d540ea421e817caf1bb"
@@ -79,7 +83,7 @@ class FavouriteDetails : Fragment() {
             viewModel.currentWeather.collect { result ->
                 when (result) {
                     is ResultResponse.OnSuccess -> {
-                        viewModel.addToDatabase(result.data)
+                       // viewModel.addToDatabase(result.data)
                         binding.showFWeatherData.visibility = View.VISIBLE
                         binding.HomeFprogressBar.visibility = View.GONE
                         val weatherCurrent = result.data.current
@@ -88,8 +92,9 @@ class FavouriteDetails : Fragment() {
                             weatherCurrent.dt, "EEE, d MMM ", viewModel.getLanguage()
                         )
 
+
                         viewModel.cityName.observe(viewLifecycleOwner) {
-                            binding.tvFCity.text = it ?: ""
+                            binding.tvFCity.text = it
                         }
                         binding.tvFHomeWeatherDescription.text = weatherDesc.description
                         binding.tvFTemp.text = weatherCurrent.temp.roundToInt().toString()
@@ -102,11 +107,11 @@ class FavouriteDetails : Fragment() {
                                 "C"
                             }
 
-                        Picasso.get().load("${Constants.IMG_URL}${weatherDesc.icon}@4x.png")
-                        binding.tvFPressureTitle.text = weatherCurrent.pressure.toString()
-                        binding.txtFViewHumidityTitle.text = weatherCurrent.humidity.toString()
-                        binding.tvFCloudsTitle.text = weatherCurrent.clouds.toString()
+                        //Picasso.get().load("${Constants.IMG_URL}${weatherDesc.icon}@4x.png")
+                        binding.tvFPressure.text = weatherCurrent.pressure.toString()
+                        binding.tvFHumidity.text = weatherCurrent.humidity.toString()
                         binding.tvFClouds.text = weatherCurrent.clouds.toString()
+                        binding.tvFVisibility.text = weatherCurrent.clouds.toString()
                         binding.txtFViewWindSpeed.text =
                             if ((viewModel.getWindSpeedUnit() == Constants.WIND_SPEED_UNIT_M_P_S) && (viewModel.getCurrentTempMeasurementUnit() == Constants.MEASUREMENT_UNIT_IMPERIAL)) {
                                 (weatherCurrent.wind_speed * 0.44704).roundToInt().toString()
@@ -126,6 +131,7 @@ class FavouriteDetails : Fragment() {
 
                         daysWeathersAdapter.setDays(result.data.daily)
                         hourlyWeathersAdapter.sethours(result.data.hourly)
+                        binding.tvFUVI.text=weatherCurrent.uvi.toString()
 
                     }
                     is ResultResponse.OnLoading -> {

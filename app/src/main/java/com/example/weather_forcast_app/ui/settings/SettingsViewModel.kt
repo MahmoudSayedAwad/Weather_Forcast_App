@@ -5,7 +5,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.weather_forcast_app.utils.Constants
 import com.example.weather_forcast_app.utils.Constants.APPLICATION_LANGUAGE
 import com.example.weather_forcast_app.utils.Constants.APPLICATION_LANGUAGE_EN
 import com.example.weather_forcast_app.utils.Constants.LOCATION_METHOD
@@ -18,7 +17,7 @@ import com.example.weather_forcast_app.utils.Constants.NOTIFICATION_Type_NOTI
 import com.example.weather_forcast_app.utils.Constants.WIND_SPEED_UNIT
 import com.example.weather_forcast_app.utils.Constants.WIND_SPEED_UNIT_M_P_S
 import com.example.weather_forcast_app.utils.SharedPrefManger
-import com.example.weather_forcast_app.utils.getDisplayCurrentLanguage
+import com.example.weather_forcast_app.utils.getDisplayCurrentDefaultLanguage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -71,7 +70,7 @@ class SettingsViewModel @Inject constructor(private val sharedPrefManger: Shared
 
     fun getLanguage() {
         viewModelScope.launch(Dispatchers.IO) {
-            _language.postValue( sharedPrefManger.getStringValue(APPLICATION_LANGUAGE, getDisplayCurrentLanguage()))
+            _language.postValue( sharedPrefManger.getStringValue(APPLICATION_LANGUAGE, getDisplayCurrentDefaultLanguage()))
 
         }
     }

@@ -12,7 +12,7 @@ import com.example.domain.useCases.InsertUserAlerts
 import com.example.domain.utils.ResultResponse
 import com.example.weather_forcast_app.utils.Constants
 import com.example.weather_forcast_app.utils.SharedPrefManger
-import com.example.weather_forcast_app.utils.getDisplayCurrentLanguage
+import com.example.weather_forcast_app.utils.getDisplayCurrentDefaultLanguage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,8 +32,8 @@ class AlertsViewModel @Inject constructor(
     private val _alertsList: MutableStateFlow<ResultResponse<List<UserAlertsEntity>>> =
         MutableStateFlow(ResultResponse.OnLoading(true))
     val alertList: StateFlow<ResultResponse<List<UserAlertsEntity>>> = _alertsList
-    private var _addedSuccessfully = MutableStateFlow<String>("")
-    val addedSuccessfully: StateFlow<String> = _addedSuccessfully
+    private var _id = MutableStateFlow<ResultResponse<Long>>(ResultResponse.OnLoading(true))
+    val id: StateFlow<ResultResponse<Long>> = _id
     private var _deletedSuccessfully = MutableStateFlow<String>("")
     val deletedSuccessfully: StateFlow<String> = _deletedSuccessfully
     fun getAlertsList() {
@@ -49,22 +49,15 @@ class AlertsViewModel @Inject constructor(
     fun getLanguage(): String {
 
         return sharedPrefManger.getStringValue(
-            Constants.APPLICATION_LANGUAGE, getDisplayCurrentLanguage()
+            Constants.APPLICATION_LANGUAGE, getDisplayCurrentDefaultLanguage()
         )
 
     }
 
     fun addUserAlert(alertsEntity: UserAlertsEntity) {
         viewModelScope.launch {
-            addUserAlerts(alertsEntity).flowOn(Dispatchers.IO).collect { it ->
-                when (it) {
-                    is ResultResponse.OnSuccess -> {
-                        _addedSuccessfully.value = "added successfully"
-
-                    }
-
-                    else -> {}
-                }
+            addUserAlerts(alertsEntity).flowOn(Dispatchers.IO).collect {
+                _id.value=it
             }
         }
     }
@@ -76,6 +69,9 @@ class AlertsViewModel @Inject constructor(
                     is ResultResponse.OnSuccess -> {
                         _deletedSuccessfully.value = "deleted successfully"
 
+                    }
+                    is ResultResponse.OnError ->{
+                        println(it.message)
                     }
 
                     else -> {}

@@ -68,8 +68,20 @@ class FavouriteFragment : Fragment(), FavouriteInterface {
             .setPositiveButton(R.string.ok) { _, _ ->
                 lifecycleScope.launch {
                     viewModel.deleteFromFav(fav)
-                    favAdapter.notifyItemRemoved(position)
+                    viewModel.getFavouriteList()
+                    viewModel.favouriteList.collect {
+                        when (it) {
+                            is ResultResponse.OnSuccess -> {
 
+                                // favAdapter = FavouriteAdapter(requireContext(), this@FavouriteFragment)
+                                favAdapter.submitList(it.data)
+                                favAdapter.notifyDataSetChanged()
+
+                            }
+                            else -> {}
+                        }
+
+                    }
 
                 }
             }
@@ -80,8 +92,10 @@ class FavouriteFragment : Fragment(), FavouriteInterface {
     }
 
     override fun goToDetails(fav: FavouriteCityEntity) {
-        val action = FavouriteFragmentDirections.actionNavigationFavouriteToFavouriteDetails(fav.latitude.toFloat(),
-            fav.longitude.toFloat())
+        val action = FavouriteFragmentDirections.actionNavigationFavouriteToFavouriteDetails(
+            fav.latitude.toFloat(),
+            fav.longitude.toFloat()
+        )
         this.findNavController().navigate(action)
     }
 }

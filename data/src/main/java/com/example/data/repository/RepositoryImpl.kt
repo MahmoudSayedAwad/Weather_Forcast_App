@@ -129,7 +129,7 @@ class RepositoryImpl(
 
     }.catch { e -> emit(ResultResponse.OnError(e.message ?: Constants.unknownError)) }
 
-    override suspend fun insertUserAlerts(userAlerts: UserAlertsEntity): Flow<ResultResponse<Unit>> =
+    override suspend fun insertUserAlerts(userAlerts: UserAlertsEntity): Flow<ResultResponse<Long>> =
         flow {
 
             emit(ResultResponse.OnLoading(true))
@@ -149,5 +149,25 @@ class RepositoryImpl(
                 ResultResponse.OnSuccess(response)
             )
 
-        }.catch { e -> emit(ResultResponse.OnError(e.message ?: Constants.unknownError)) }
+        }.catch { e ->
+            emit(ResultResponse.OnError(e.message ?: Constants.unknownError))
+        }
+
+    override suspend fun deleteUserAlertsById(id: Int): Unit =
+        appDatabase.alertDao().deleteUserAlertsById(id)
+
+
+    override suspend fun getUserAlertsById(id: Int): UserAlertsEntity =
+        appDatabase.alertDao().getUserAlertsById(id).toDomain()
+
+    override suspend fun getWeatherForWorker(
+        latitude: Double,
+        longitude: Double,
+        measurementUnit: String,
+        language: String,
+        apiKey: String
+    ): OneCall = apiService.getCurrentWeather(
+        latitude, longitude, measurementUnit, language, apiKey
+    ).toDomain()
+
 }

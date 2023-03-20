@@ -25,7 +25,16 @@ interface Repository {
 
     suspend fun getUserAlerts(): Flow<ResultResponse<List<UserAlertsEntity>>>
 
-    suspend fun insertUserAlerts(userAlerts: UserAlertsEntity): Flow<ResultResponse<Unit>>
+    suspend fun insertUserAlerts(userAlerts: UserAlertsEntity): Flow<ResultResponse<Long>>
 
     suspend fun deleteUserAlerts(userAlerts: UserAlertsEntity): Flow<ResultResponse<Unit>>
+    suspend fun deleteUserAlertsById(id: Int): Unit
+    suspend fun getUserAlertsById(id: Int): UserAlertsEntity
+    suspend fun getWeatherForWorker(
+        latitude: Double,
+        longitude: Double,
+        measurementUnit: String,
+        language: String,
+        apiKey: String
+    ):OneCall
 }

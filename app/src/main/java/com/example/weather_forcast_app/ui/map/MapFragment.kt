@@ -6,10 +6,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.example.domain.entities.FavouriteCityEntity
 import com.example.weather_forcast_app.R
 import com.example.weather_forcast_app.ui.favourite.FavouriteViewModel
@@ -137,7 +137,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         alert.setPositiveButton(requireView().resources.getString(R.string.save)) { _: DialogInterface, _: Int ->
             viewModel.addFavourite(model)
             val action = MapFragmentDirections.actionMapFragmentToNavigationFavourite()
-            requireView().findNavController().navigate(action)
+            findNavController().navigate(action)
         }
         alert.setNegativeButton(requireView().resources.getString(R.string.cancel)) { _: DialogInterface, _: Int ->
         }
@@ -159,7 +159,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             viewModel.setLongitude(model.longitude.toFloat())
             viewModel.setLocationMethod(Constants.LOCATION_METHOD_MAP)
             val action = MapFragmentDirections.actionMapFragmentToNavigationHome()
-            requireView().findNavController().navigate(action)
+            findNavController().navigate(action)
 
         }
         alert.setNegativeButton("cancel") { _: DialogInterface, _: Int ->

@@ -9,7 +9,6 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.view.LayoutInflater
@@ -19,21 +18,21 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.RadioButton
 import android.widget.RadioGroup
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.work.*
 import com.example.domain.entities.UserAlertsEntity
 import com.example.domain.utils.ResultResponse
 import com.example.weather_forcast_app.R
 import com.example.weather_forcast_app.databinding.FragmentAlertsBinding
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 @AndroidEntryPoint
 class AlertsFragment : Fragment(), OnDeleteAlert {
@@ -55,19 +54,14 @@ class AlertsFragment : Fragment(), OnDeleteAlert {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
     }
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         binding = FragmentAlertsBinding.inflate(inflater, container, false)
-
         return binding.root
-
     }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         dialog = Dialog(requireContext())
@@ -102,13 +96,12 @@ class AlertsFragment : Fragment(), OnDeleteAlert {
             } else if (endDateid.text.toString().isEmpty()) {
                 endDateid.error = "Field is required"
             } else {
-                val userAlerts = UserAlertsEntity(startLongDate, endLongDate, option)
-              //  checkPermissionOfOverlay()
+                val userAlerts = UserAlertsEntity(
+                    id = null, startDate = startLongDate, endDate = endLongDate, type = option
+                )
+                checkPermissionOfOverlay()
                 viewModel.addUserAlert(userAlerts)
-                lifecycleScope.launch {
-                    delay(10000)
-                    startAlertService("this is for test only")
-                }
+
                 startDateid.setText("")
                 endDateid.setText("")
                 dialog.cancel()
@@ -135,6 +128,17 @@ class AlertsFragment : Fragment(), OnDeleteAlert {
                 }
             }
         }
+        lifecycleScope.launch {
+
+            viewModel.id.collect {
+                when (it) {
+                    is ResultResponse.OnSuccess -> {
+                        setPeriodWorkManger(it.data)
+                    }
+                    else -> {}
+                }
+            }
+        }
     }
 
     override fun delete(alert: UserAlertsEntity) {
@@ -143,6 +147,8 @@ class AlertsFragment : Fragment(), OnDeleteAlert {
             .setMessage(getString(R.string.delete_place)).setPositiveButton(R.string.ok) { _, _ ->
                 lifecycleScope.launch {
                     viewModel.deleteFromUserAlert(alert)
+                    //                   WorkManager.getInstance().cancelAllWorkByTag("${alert.id}")
+                    println(alert)
                     viewModel.getAlertsList()
                 }
             }.setNegativeButton(R.string.cancel) { _, _ -> }.setIcon(R.drawable.ic_warning_24)
@@ -150,16 +156,29 @@ class AlertsFragment : Fragment(), OnDeleteAlert {
 
     }
 
+    private fun setPeriodWorkManger(id: Long) {
+
+        val data = Data.Builder()
+        data.putLong("id", id)
+
+        val constraints = Constraints.Builder().setRequiresBatteryNotLow(true)
+            .setRequiredNetworkType(NetworkType.CONNECTED).build()
+        val periodicWorkRequest = PeriodicWorkRequest.Builder(
+            AlertPeriodicWorkManger::class.java, 24, TimeUnit.HOURS
+        ).setConstraints(constraints).setInputData(data.build()).build()
+        WorkManager.getInstance(requireContext()).enqueueUniquePeriodicWork(
+            "$id", ExistingPeriodicWorkPolicy.REPLACE, periodicWorkRequest
+        )
+    }
+
     private fun showDateTimePicker(label: String) {
         val currentDate = Calendar.getInstance()
         var date: Calendar = Calendar.getInstance()
         val datePickerDialog = DatePickerDialog(
-            requireContext(),
-            { view, year, monthOfYear, dayOfMonth ->
+            requireContext(), { _, year, monthOfYear, dayOfMonth ->
                 date.set(year, monthOfYear, dayOfMonth)
                 TimePickerDialog(
-                    context,
-                    { view, hourOfDay, minute ->
+                    context, { _, hourOfDay, minute ->
                         date.set(Calendar.HOUR_OF_DAY, hourOfDay)
                         date.set(Calendar.MINUTE, minute)
                         if (label == "startDateEditText") {
@@ -182,20 +201,10 @@ class AlertsFragment : Fragment(), OnDeleteAlert {
         val myFormat = "HH:mm a\ndd/MM/yyyy"
         val dateFormat = SimpleDateFormat(myFormat, Locale(viewModel.getLanguage()))
         val milliseconds: Long = calendar.timeInMillis
-
         editText.setText(dateFormat.format(calendar.time))
         return milliseconds
     }
 
-    private fun startAlertService(des: String) {
-        val intent = Intent(requireContext(), AlertService::class.java)
-        intent.putExtra("description", des)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            ContextCompat.startForegroundService(requireContext(), intent)
-        } else {
-            requireActivity().startService(intent)
-        }
-    }
 
     private fun checkPermissionOfOverlay() {
         if (!Settings.canDrawOverlays(requireContext())) {
@@ -216,5 +225,3 @@ class AlertsFragment : Fragment(), OnDeleteAlert {
         }
     }
 }
-
-

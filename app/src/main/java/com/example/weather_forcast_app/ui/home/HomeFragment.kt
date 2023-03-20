@@ -65,6 +65,7 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        //  requestPermissions()
         init(view)
         if (viewModel.getLocationMethod() == LOCATION_METHOD_MAP) {
             viewModel.getCurrentWeather(
@@ -74,21 +75,27 @@ class HomeFragment : Fragment() {
                 viewModel.getLanguage(),
                 "67ca8d4acae59d540ea421e817caf1bb"
             )
+            viewModel.getCityName(
+                viewModel.getLatitude(),
+                viewModel.getLongitude(), requireContext()
+            )
 
         } else {
-            viewModel.location.observe(viewLifecycleOwner, Observer {
-                println(it.latitude)
-                viewModel.setLatitude(it.latitude.toFloat())
-                viewModel.setLongitude(it.longitude.toFloat())
-                viewModel.getCurrentWeather(
-                    it.latitude,
-                    it.longitude,
-                    viewModel.getCurrentTempMeasurementUnit(),
-                    viewModel.getLanguage(),
-                    "67ca8d4acae59d540ea421e817caf1bb"
-                )
+            viewModel.getLocation(requireContext(), requireActivity())
+                .observe(viewLifecycleOwner, Observer {
+                    println(it.latitude)
+                    viewModel.setLatitude(it.latitude.toFloat())
+                    viewModel.setLongitude(it.longitude.toFloat())
+                    viewModel.getCurrentWeather(
+                        it.latitude,
+                        it.longitude,
+                        viewModel.getCurrentTempMeasurementUnit(),
+                        viewModel.getLanguage(),
+                        "67ca8d4acae59d540ea421e817caf1bb"
+                    )
+                    viewModel.getCityName(it.latitude, it.longitude, requireContext())
 
-            })
+                })
         }
 
 
@@ -167,7 +174,7 @@ class HomeFragment : Fragment() {
                                 "C"
                             }
 
-                        Picasso.get().load("${IMG_URL}${weatherDesc.icon}@4x.png")
+                        Picasso.get().load("${IMG_URL}${weatherDesc.icon}@4x.png").into(tempIcon)
                         pressureTxt.text = weatherCurrent.pressure.toString()
                         humidityTxt.text = weatherCurrent.humidity.toString()
                         cloudTxt.text = weatherCurrent.clouds.toString()
@@ -188,7 +195,7 @@ class HomeFragment : Fragment() {
                             } else {
                                 view.resources.getString(R.string.mile_hour)
                             }
-
+                        ultraVioletTxt.text = weatherCurrent.uvi.toString()
                         daysWeathersAdapter.setDays(result.data.daily)
                         hourlyWeathersAdapter.sethours(result.data.hourly)
 

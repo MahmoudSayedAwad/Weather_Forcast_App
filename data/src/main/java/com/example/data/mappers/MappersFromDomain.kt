@@ -137,7 +137,7 @@ fun Alert?.fromDomain(): AlertResponse {
 }
 
 fun UserAlertsEntity?.fromDomain(): UserAlert {
-    return UserAlert(id = null,
+    return UserAlert(this?.id?.orZero() ,
         this?.startDate?.orZero() ?: Constants.zero.toLong(),
         this?.endDate?.orZero() ?: Constants.zero.toLong(),
         this?.type.orEmpty()

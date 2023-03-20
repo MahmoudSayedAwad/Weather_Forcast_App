@@ -24,6 +24,7 @@ class FavouriteAdapter(var context: Context?, var fav: FavouriteInterface) :
         holder.binding.textCityFavName.text = current.cityName
         holder.binding.cardView.setOnClickListener {
             fav.goToDetails(current)
+
         }
 
     }

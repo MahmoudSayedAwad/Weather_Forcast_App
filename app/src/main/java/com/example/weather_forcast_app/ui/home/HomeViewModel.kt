@@ -1,5 +1,6 @@
 package com.example.weather_forcast_app.ui.home
 
+import android.app.Activity
 import android.content.Context
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.location.Address
@@ -15,9 +16,8 @@ import com.example.domain.utils.ResultResponse
 import com.example.weather_forcast_app.utils.Constants
 import com.example.weather_forcast_app.utils.LocationHelper
 import com.example.weather_forcast_app.utils.SharedPrefManger
-import com.example.weather_forcast_app.utils.getDisplayCurrentLanguage
+import com.example.weather_forcast_app.utils.getDisplayCurrentDefaultLanguage
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -30,18 +30,19 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val getCurrentWeatherUseCase: GetCurrentWeatherUseCase,
     private val sharedPrefManger: SharedPrefManger,
-    @ApplicationContext var context: Context,
     private val insertOneCallModel: InsertOneCallModel
 
 ) : ViewModel() {
     private var _currentWeather =
         MutableStateFlow<ResultResponse<OneCall>>(ResultResponse.OnLoading(true))
     val currentWeather: StateFlow<ResultResponse<OneCall>> = _currentWeather
-    private var _location = LocationHelper(context)
-    val location = _location
+
+
     private var _cityName = MutableLiveData<String>()
     val cityName: LiveData<String> = _cityName
-
+    fun getLocation(context: Context,activity: Activity):LocationHelper{
+        return LocationHelper(context,activity);
+    }
 
     private lateinit var listener: OnSharedPreferenceChangeListener
     fun getCurrentWeather(
@@ -52,7 +53,7 @@ class HomeViewModel @Inject constructor(
         apiKey: String
     ) {
         viewModelScope.launch {
-            getCityName(latitude, longitude)
+         //   getCityName(latitude, longitude)
 
             getCurrentWeatherUseCase(latitude, longitude, measurementUnit, language, apiKey).flowOn(
                 Dispatchers.IO
@@ -124,12 +125,12 @@ class HomeViewModel @Inject constructor(
 
 
         return sharedPrefManger.getStringValue(
-            Constants.APPLICATION_LANGUAGE, getDisplayCurrentLanguage()
+            Constants.APPLICATION_LANGUAGE, getDisplayCurrentDefaultLanguage()
         )
 
     }
 
-    fun getCityName(latitude: Double, longitude: Double) {
+    fun getCityName(latitude: Double, longitude: Double,context: Context) {
         viewModelScope.launch {
             val geocoder = Geocoder(context, Locale.getDefault())
             val list = geocoder.getFromLocation(

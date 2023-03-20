@@ -2,6 +2,7 @@ package com.example.weather_forcast_app.utils
 
 
 import android.Manifest
+import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
@@ -16,7 +17,7 @@ import com.google.android.gms.location.LocationServices
 
 const val permissionId = 19
 
-class LocationHelper(val context: Context) : LiveData<LocationModel>() {
+class LocationHelper(val context: Context,val activity: Activity) : LiveData<LocationModel>() {
     private var fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
 
     companion object {
@@ -44,14 +45,14 @@ class LocationHelper(val context: Context) : LiveData<LocationModel>() {
                 context, Manifest.permission.ACCESS_COARSE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
+            requestPermissions()
 
-            return
         }
         fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
-                location?.also {
-                    setLocationData(it)
-                }
+            location?.also {
+                setLocationData(it)
             }
+        }
         startLocationUpdates()
 
     }
@@ -80,10 +81,20 @@ class LocationHelper(val context: Context) : LiveData<LocationModel>() {
                 context, Manifest.permission.ACCESS_COARSE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            return
+              requestPermissions()
         }
         fusedLocationClient.requestLocationUpdates(
             locationRequest, locationCallback, Looper.getMainLooper()
+        )
+    }
+    private fun requestPermissions() {
+        ActivityCompat.requestPermissions(
+           activity,
+            arrayOf(
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ),
+            permissionId
         )
     }
 

@@ -6,6 +6,7 @@ import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.runBlocking
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.example.data.db.AppDatabase
 import com.example.data.db.FavouriteCityDao
@@ -17,16 +18,17 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
 import javax.inject.Inject
 import javax.inject.Named
 
 @ExperimentalCoroutinesApi
 @SmallTest
+@RunWith(AndroidJUnit4::class)
 @HiltAndroidTest
 class TestAppDb {
     @get:Rule
     var hiltRule = HiltAndroidRule(this)
-
     @get:Rule
     var instantTaskExecutorRule = InstantTaskExecutorRule()
     @Inject
@@ -60,5 +62,4 @@ class TestAppDb {
         val allFavItems = dao.getAllFavouriteCities()
         assertThat(allFavItems).doesNotContain(favItem)
     }
-
 }
